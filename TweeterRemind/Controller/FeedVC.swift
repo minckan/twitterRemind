@@ -10,6 +10,11 @@ import UIKit
 class FeedVC: UIViewController {
 
     // MARK: - Properties
+    var user : User? {
+        didSet {
+            
+        }
+    }
     
     // MARK: - Lifecycle
     override func viewDidLoad() {

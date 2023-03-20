@@ -6,8 +6,18 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class MainTabController: UITabBarController {
+    
+    var user : User? {
+        didSet {
+            guard let nav = viewControllers?[0] as? UINavigationController else {return}
+            guard let feed = nav.viewControllers.first as? FeedVC else {return}
+            
+            feed.user = user
+        }
+    }
     
     // MARK: - Properties
     let actionButton: UIButton = {
@@ -22,8 +32,11 @@ class MainTabController: UITabBarController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureViewController()
-        configureUI()
+        view.backgroundColor = .twitterBlue
+        logUserOut()
+        authenticateUserAndConfigurUI()
+        
+        
     }
     
     // MARK: - Selectors
@@ -35,10 +48,31 @@ class MainTabController: UITabBarController {
     }
     
     // MARK: - API
+    func fetchUser() {
+        guard let uid = Auth.auth().currentUser?.uid else {return}
+        UserService.shared.fetchUser(uid: uid) { user in
+            self.user = user
+        }
+    }
+    
+    func authenticateUserAndConfigurUI() {
+//        print("DEBUG: current user- \(String(describing: Auth.auth().currentUser))")
+        if Auth.auth().currentUser == nil {
+            DispatchQueue.main.async {
+                let nav = UINavigationController(rootViewController: LoginVC())
+                nav.modalPresentationStyle = .fullScreen
+                self.present(nav, animated: true)
+            }
+        } else {
+            configureViewController()
+            configureUI()
+            fetchUser()
+        }
+    }
     
     // MARK: - Helpers
     func configureUI() {
-        view.backgroundColor = .twitterBlue
+        
         view.addSubview(actionButton)
         actionButton.anchor(bottom: view.safeAreaLayoutGuide.bottomAnchor, right: view.rightAnchor, paddingBottom: 64, paddingRight: 16, width: 56, height: 56)
         actionButton.layer.cornerRadius = 56 / 2
@@ -65,6 +99,14 @@ class MainTabController: UITabBarController {
         nav.tabBarItem.image = image
 //        setNavigationBarColor()
         return nav
+    }
+    
+    func logUserOut() {
+        do {
+            try Auth.auth().signOut()
+        } catch let error {
+            print("DEBUG: Failed to sign out with error \(error.localizedDescription)")
+        }
     }
     
 }

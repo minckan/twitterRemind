@@ -32,6 +32,8 @@
 		8C4B29CF29C308F9004DF4B4 /* LoginVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C4B29CE29C308F9004DF4B4 /* LoginVC.swift */; };
 		8C4B29D129C3090D004DF4B4 /* RegistrationVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C4B29D029C3090D004DF4B4 /* RegistrationVC.swift */; };
 		8C4B29D329C30B2C004DF4B4 /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C4B29D229C30B2C004DF4B4 /* Utilities.swift */; };
+		8C4F222929C7E87E00F7F3E8 /* Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C4F222829C7E87E00F7F3E8 /* Constant.swift */; };
+		8C4F222B29C80D2400F7F3E8 /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C4F222A29C80D2400F7F3E8 /* UserService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -57,6 +59,8 @@
 		8C4B29CE29C308F9004DF4B4 /* LoginVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginVC.swift; sourceTree = "<group>"; };
 		8C4B29D029C3090D004DF4B4 /* RegistrationVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationVC.swift; sourceTree = "<group>"; };
 		8C4B29D229C30B2C004DF4B4 /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
+		8C4F222829C7E87E00F7F3E8 /* Constant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constant.swift; sourceTree = "<group>"; };
+		8C4F222A29C80D2400F7F3E8 /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,6 +141,7 @@
 			isa = PBXGroup;
 			children = (
 				8C4B29CB29C3089B004DF4B4 /* AuthService.swift */,
+				8C4F222A29C80D2400F7F3E8 /* UserService.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -148,6 +153,7 @@
 				8C4B29AD29C2EFC9004DF4B4 /* Extensions.swift */,
 				8C4B29B729C2F265004DF4B4 /* Common.swift */,
 				8C4B29D229C30B2C004DF4B4 /* Utilities.swift */,
+				8C4F222829C7E87E00F7F3E8 /* Constant.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -259,6 +265,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				8C4B29B029C2F074004DF4B4 /* FeedVC.swift in Sources */,
+				8C4F222929C7E87E00F7F3E8 /* Constant.swift in Sources */,
+				8C4F222B29C80D2400F7F3E8 /* UserService.swift in Sources */,
 				8C4B29AE29C2EFC9004DF4B4 /* Extensions.swift in Sources */,
 				8C4B29CF29C308F9004DF4B4 /* LoginVC.swift in Sources */,
 				8C4B29B429C2F099004DF4B4 /* ExploreVC.swift in Sources */,
