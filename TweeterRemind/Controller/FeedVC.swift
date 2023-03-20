@@ -6,13 +6,22 @@
 //
 
 import UIKit
+import SDWebImage
 
-class FeedVC: UIViewController {
+private let reuseIdentifier = "TweetCell"
+
+class FeedVC: UICollectionViewController {
 
     // MARK: - Properties
     var user : User? {
         didSet {
-            
+            configureLeftBarButton()
+        }
+    }
+    
+    private var tweets = [Tweet]() {
+        didSet {
+            collectionView.reloadData()
         }
     }
     
@@ -20,16 +29,22 @@ class FeedVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
-        configureLeftBarButton()
+        fetchTweets()
     }
     
     // MARK: - Selectors
     
     // MARK: - API
+    func fetchTweets() {
+        TweetService.shared.fetchTweet { tweets in
+            self.tweets = tweets
+        }
+    }
     
     // MARK: - Helpers
     func configureUI() {
-        view.backgroundColor = .white
+        collectionView.register(TweetCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+        collectionView.backgroundColor = .white
         
         let imageView = UIImageView(image: UIImage(named: "twitter_logo_blue"))
         imageView.contentMode = .scaleAspectFit
@@ -38,7 +53,7 @@ class FeedVC: UIViewController {
     }
     
     func configureLeftBarButton() {
-        let profileImageView = UIView()
+        let profileImageView = UIImageView()
         profileImageView.setDimensions(width: 32, height: 32)
         profileImageView.backgroundColor = .twitterBlue
         profileImageView.layer.cornerRadius = 32 / 2
@@ -46,7 +61,36 @@ class FeedVC: UIViewController {
         // TODO: view.layer의 역할이 뭘까?
         // view를 그려주는 역할?
         
+        profileImageView.sd_setImage(with: user?.profileImageUrl)
+        
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: profileImageView)
     }
     
+}
+
+extension FeedVC {
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+       return tweets.count
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! TweetCell
+        cell.tweet = tweets[indexPath.row]
+        cell.delegate = self
+        return cell
+    }
+}
+
+extension FeedVC : UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: view.frame.width, height: 120)
+    }
+}
+
+extension FeedVC:TweetCellDelegate {
+    func handleProfileImageTapped(_ cell: TweetCell) {
+        guard let user = cell.tweet?.user else {return}
+        let controller = ProfileController(user: user)
+        navigationController?.pushViewController(controller, animated: true)
+    }
 }

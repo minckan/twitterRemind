@@ -33,7 +33,7 @@ class MainTabController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .twitterBlue
-        logUserOut()
+//        logUserOut()
         authenticateUserAndConfigurUI()
         
         
@@ -41,7 +41,8 @@ class MainTabController: UITabBarController {
     
     // MARK: - Selectors
     @objc func actionButtonTabbed() {
-        let controller = UploadTweetController()
+        guard let user = user else {return}
+        let controller = UploadTweetController(user: user)
         let nav = UINavigationController(rootViewController: controller)
         nav.modalPresentationStyle = .fullScreen
         present(nav, animated: true)
@@ -79,7 +80,7 @@ class MainTabController: UITabBarController {
     }
     
     func configureViewController() {
-        let feed = FeedVC()
+        let feed = FeedVC(collectionViewLayout: UICollectionViewFlowLayout())
         let nav1 = templateNavigationController(image: UIImage(named: "home_unselected"), rootViewController: feed)
         
         let explore = ExploreVC()
