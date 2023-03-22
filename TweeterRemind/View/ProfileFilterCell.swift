@@ -24,6 +24,15 @@ class ProfileFilterCell : UICollectionViewCell {
         return label
     }()
     
+    override var isSelected: Bool {
+        didSet {
+            titleLabel.font = isSelected ? UIFont.boldSystemFont(ofSize: 16) : UIFont.systemFont(ofSize: 14)
+            
+            titleLabel.textColor = isSelected ? .twitterBlue : .lightGray
+            
+        }
+    }
+    
     // MARK: - Lifecycle
     override init(frame: CGRect) {
         super.init(frame: frame)

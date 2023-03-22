@@ -7,6 +7,11 @@
 
 import UIKit
 
+protocol ProfileHeaderDelegate : AnyObject {
+    func handleDismissal()
+    func handleEditProfileFollowed(_ header: ProfileHeader)
+}
+
 class ProfileHeader: UICollectionReusableView {
     // MARK: - Properties
     var user: User? {
@@ -14,6 +19,8 @@ class ProfileHeader: UICollectionReusableView {
             configure()
         }
     }
+    
+    weak var delegate: ProfileHeaderDelegate?
     
     private let filterBar = ProfileFilterView()
     
@@ -45,7 +52,7 @@ class ProfileHeader: UICollectionReusableView {
     }()
     
     private lazy var editProfileFollowButton: UIButton = {
-        let button = UIButton()
+        let button = UIButton(type: .system)
         button.setTitle("Loading", for: .normal)
         button.layer.borderColor = UIColor.twitterBlue.cgColor
         button.layer.borderWidth = 1.25
@@ -88,7 +95,7 @@ class ProfileHeader: UICollectionReusableView {
     private let followingLabel: UILabel = {
         let label = UILabel()
         
-        let followTap = UITapGestureRecognizer(target: self, action: #selector(handleFollwersTapped))
+        let followTap = UITapGestureRecognizer(target: ProfileHeader.self, action: #selector(handleFollwersTapped))
         
         label.isUserInteractionEnabled = true
         label.addGestureRecognizer(followTap)
@@ -99,7 +106,7 @@ class ProfileHeader: UICollectionReusableView {
     private let follwersLabel : UILabel = {
         let label = UILabel()
 
-        let followTap = UITapGestureRecognizer(target: self, action: #selector(handleFollowingTapped))
+        let followTap = UITapGestureRecognizer(target: ProfileHeader.self, action: #selector(handleFollowingTapped))
         
         label.isUserInteractionEnabled = true
         label.addGestureRecognizer(followTap)
@@ -111,6 +118,8 @@ class ProfileHeader: UICollectionReusableView {
     // MARK: - Lifecycle
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
+        filterBar.delegate = self
         
         addSubview(containerView)
         containerView.anchor(top: topAnchor, left: leftAnchor, right: rightAnchor, height: 108)
@@ -154,11 +163,11 @@ class ProfileHeader: UICollectionReusableView {
     
     // MARK: - Selectors
     @objc func handleDismissal() {
-        
+        delegate?.handleDismissal()
     }
     
     @objc func handleEditProfileFollow() {
-        
+        delegate?.handleEditProfileFollowed(self)
     }
     
     @objc func handleFollwersTapped() {
@@ -174,6 +183,34 @@ class ProfileHeader: UICollectionReusableView {
     // MARK: - Helpers
     func configure() {
         guard let user = user else {return}
+        let viewModel = ProfileHeaderViewModel(user: user)
+        profileImageView.sd_setImage(with: user.profileImageUrl)
         
+        
+        usernameLabel.text = viewModel.usernameText
+        fullnameLabel.text = user.fullname
+        
+        follwersLabel.attributedText = viewModel.followersString
+        followingLabel.attributedText = viewModel.followingString
+        
+        editProfileFollowButton.setTitle(viewModel.actionButtonTitle, for: .normal)
+        
+        print("DEBUG: user following is \(viewModel.followingString)")
+        
+        
+    }
+}
+
+
+// MARK: - ProfileFilterViewDelegate
+
+extension ProfileHeader: ProfileFilterViewDelegate {
+    func filterView(_ view: ProfileFilterView, didSelect indexPath: IndexPath) {
+        guard let cell = view.collectionView.cellForItem(at: indexPath) as? ProfileFilterCell else {return}
+        
+        let xPos = cell.frame.origin.x
+        UIView.animate(withDuration: 0.3) {
+            self.underlineView.frame.origin.x = xPos
+        }
     }
 }

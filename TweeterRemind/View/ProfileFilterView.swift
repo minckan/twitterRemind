@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol ProfileFilterViewDelegate : AnyObject {
+    func filterView(_ view: ProfileFilterView, didSelect indexPath: IndexPath)
+}
+
 private let reuseIdentifier = "ProfileFilterCell"
 
 class ProfileFilterView : UIView {
@@ -20,6 +24,9 @@ class ProfileFilterView : UIView {
        return cv
     }()
     
+    weak var delegate: ProfileFilterViewDelegate?
+    
+    // MARK: - Lifecycle
     override init(frame: CGRect) {
         super.init(frame: frame)
         
@@ -36,13 +43,14 @@ class ProfileFilterView : UIView {
 
 // MARK: - UICollectionViewDelegate
 extension ProfileFilterView : UICollectionViewDelegate {
-
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        delegate?.filterView(self, didSelect: indexPath)
+    }
 }
 
 // MARK: - UICollectionViewDataSource
 extension ProfileFilterView : UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        print(ProfileFilterOption.allCases.count)
         return ProfileFilterOption.allCases.count
     }
     
@@ -52,14 +60,14 @@ extension ProfileFilterView : UICollectionViewDataSource {
         return cell
     }
 }
-// MARK: -
+// MARK: - UICollectionViewDelegateFlowLayout
 extension ProfileFilterView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let count = CGFloat(ProfileFilterOption.allCases.count)
         return CGSize(width: frame.width / count, height: frame.height)
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 0
     }
 }
